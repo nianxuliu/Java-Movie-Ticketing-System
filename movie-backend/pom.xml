@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<!-- 1. 修改 Spring Boot 版本为 3.2.5 以匹配 Spring Cloud Alibaba -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.5</version> 
+		<relativePath/> 
+	</parent>
+
+	<groupId>com.movie</groupId>
+	<artifactId>movie-backend</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>movie-backend</name>
+	<description>Movie System Backend with Enterprise Stack</description>
+
+	<properties>
+		<java.version>17</java.version>
+		<!-- 定义版本号，防止冲突 -->
+		<mybatis-plus.version>3.5.5</mybatis-plus.version>
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
+		<spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
+		<hutool.version>5.8.26</hutool.version>
+		<minio.version>8.5.9</minio.version>
+	</properties>
+
+	<dependencies>
+		<!-- ================= Web 核心 ================= -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- ================= 数据库相关 ================= -->
+		<!-- MySQL 驱动 -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- 重点：MyBatis Plus (替换了你原来的 mybatis-starter) -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+			<version>${mybatis-plus.version}</version>
+		</dependency>
+		
+		<!-- 重点：代码生成器依赖 -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-generator</artifactId>
+			<version>${mybatis-plus.version}</version>
+		</dependency>
+		<!-- 模板引擎 (生成器需要) -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-engine-core</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<!-- ================= 中间件 (Docker) ================= -->
+		<!-- 1. Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- 2. RabbitMQ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+		<!-- 3. Elasticsearch -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+
+		<!-- 4. MinIO (对象存储) -->
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>${minio.version}</version>
+		</dependency>
+
+		<!-- 5. Nacos (配置中心 & 注册中心) -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!-- 必须添加 bootstrap 依赖才能读取 bootstrap.yml/properties -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
+		<!-- ================= 工具库 ================= -->
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>${hutool.version}</version>
+		</dependency>
+		
+		<!-- 测试库 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+    		<groupId>io.swagger</groupId>
+    		<artifactId>swagger-annotations</artifactId>
+    		<version>1.6.11</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- ================= 版本管理核心 (BOM) ================= -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- Spring Cloud 管理 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Spring Cloud Alibaba 管理 -->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>${spring-cloud-alibaba.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

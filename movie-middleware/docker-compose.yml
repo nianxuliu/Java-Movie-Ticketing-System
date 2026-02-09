@@ -1,0 +1,58 @@
+services:
+  # 1. Redis (缓存)
+  redis:
+    image: redis:latest
+    container_name: movie-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass 123456  # 设置密码
+
+  # 2. Nacos (注册中心 & 配置中心)
+  nacos:
+    image: nacos/nacos-server:v2.2.0
+    container_name: movie-nacos
+    # --- 修改重点：去掉了 env_file，直接在这里配置 ---
+    environment:
+      - MODE=standalone        # 必须：单机模式（默认是集群会报错）
+      - JVM_XMS=256m           # 限制内存，防止电脑卡死
+      - JVM_XMX=256m
+      - PREFER_HOST_MODE=hostname
+    # ----------------------------------------------
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+
+  # 3. MinIO (对象存储)
+  minio:
+    image: minio/minio
+    container_name: movie-minio
+    ports:
+      - "9000:9000" # API 端口
+      - "9001:9001" # 控制台端口
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    command: server /data --console-address ":9001"
+
+  # 4. RabbitMQ (消息队列)
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: movie-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+
+  # 5. Elasticsearch (搜索引擎)
+  elasticsearch:
+        build: 
+          context: ./elasticsearch
+        container_name: movie-es
+        environment:
+          - discovery.type=single-node
+          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ports:
+          - "9200:9200"
+          - "9300:9300"

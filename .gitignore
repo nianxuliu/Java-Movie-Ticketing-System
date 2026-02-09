@@ -1,0 +1,19 @@
+# Java 垃圾文件
+target/
+*.class
+*.jar
+*.war
+
+# IDE 垃圾文件
+.idea/
+*.iml
+.vscode/
+
+# 前端垃圾文件
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# 操作系统垃圾
+.DS_Store
